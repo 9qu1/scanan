@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>スキャナン ｜ 頭の上の数字、見えてます。</title>
+<meta name="description" content="むしめがねをかざすと、みんなの頭の上に数字が浮かぶ。4つのモードで遊べるオンラインパーティーゲーム。スマホ3〜12人、合言葉ひとつで今すぐ。">
+<meta name="theme-color" content="#fff7ef">
+<meta name="build" content="86d3864">
+<meta name="cfio-endpoint" content="https://scanan.nakamido.workers.dev">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="スキャナン">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://9qu1.com/scanan/">
+<meta property="og:title" content="スキャナン ｜ 頭の上の数字、見えてます。">
+<meta property="og:description" content="むしめがねをかざすと、みんなの頭の上に数字が浮かぶ。4モードのオンラインパーティーゲーム。スマホ3〜12人、合言葉ひとつで今すぐ。">
+<!-- ★画像を差し替えたら ?v= の日付を更新する。DiscordやXは画像URL単位でキャッシュするので、
+     同じURLのまま中身だけ変えても、しばらく古いサムネが出続ける -->
+<meta property="og:image" content="https://9qu1.com/scanan/img/ogp.jpg?v=20260928">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="むしめがね越しに並ぶ、どうぶつのマスコットたち">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://9qu1.com/scanan/img/ogp.jpg?v=20260928">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=86d3864">
+</head>
+<body>
+
+<!-- 全画面の背景レイヤー -->
+<div class="bg-layer" aria-hidden="true">
+  <div class="bg-img" id="bgImg"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-vig"></div>
+</div>
+
+<!-- ══════════ ホーム ══════════ -->
+<main class="screen is-active" id="screen-home">
+  <div class="home-key">
+    <img src="img/key-visual.webp" alt="" class="home-key-img">
+    <div class="home-key-fade"></div>
+  </div>
+  <div class="home-inner">
+    <h1 class="logo">
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" fill="none"><circle cx="27" cy="27" r="17" stroke="currentColor" stroke-width="6"/><path d="M39 39L54 54" stroke="currentColor" stroke-width="8" stroke-linecap="round"/><path d="M20 20a10 10 0 0 1 7-6" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M50 10l1.8 5.2L57 17l-5.2 1.8L50 24l-1.8-5.2L43 17l5.2-1.8z" fill="currentColor"/></svg>
+      </span>
+      <span class="logo-text">スキャナン</span>
+    </h1>
+    <p class="tagline">頭の上の数字、見えてます。</p>
+    <p class="lead">スコープをかざすと、みんなの頭の上に数字が浮かぶ。<br>4つのモードで遊べる、スマホ3〜12人のパーティーゲーム。</p>
+    <p class="lead-sub">どのモードも3〜12人で遊べます。数字はモードごとの「ベスト人数」の目安。</p>
+
+    <div class="home-actions">
+      <button class="btn btn-primary btn-xl" data-go="create">部屋をつくる</button>
+      <button class="btn btn-ghost btn-xl" data-go="join">合言葉で参加</button>
+    </div>
+
+    <ul class="mode-strip">
+      <li><img src="img/ic-match.webp" alt="" loading="lazy"><div><b>ダレノスウジ</b><span>この数字、誰のだ？</span></div><em>4〜8人</em></li>
+      <li><img src="img/ic-gap.webp" alt="" loading="lazy"><div><b>ギャップスキャン</b><span>自己申告 vs みんなの採点</span></div><em>4〜12人</em></li>
+      <li><img src="img/ic-pita.webp" alt="" loading="lazy"><div><b>ピタリスキャン</b><span>近ければ近いほど高得点</span></div><em>3〜12人</em></li>
+      <li><img src="img/ic-oya.webp" alt="" loading="lazy"><div><b>オヤメガネ</b><span>数字だけでお題を当てろ</span></div><em>4〜10人</em></li>
+    </ul>
+    <button class="link-btn" id="howtoBtn">遊び方をみる</button>
+  </div>
+</main>
+
+<!-- ══════════ 名前・アバター ══════════ -->
+<main class="screen" id="screen-setup">
+  <div class="pane">
+    <button class="back-btn" data-go="home">← もどる</button>
+    <h2 class="pane-title" id="setupTitle">部屋をつくる</h2>
+
+    <div class="field" id="codeField" hidden>
+      <label for="inCode">合言葉（4文字）</label>
+      <input id="inCode" class="input input-code" maxlength="4" autocomplete="off" autocapitalize="characters" placeholder="ABCD" inputmode="text">
+    </div>
+
+    <div class="field">
+      <label for="inName">なまえ</label>
+      <input id="inName" class="input" maxlength="12" autocomplete="off" placeholder="ニックネーム">
+    </div>
+
+    <div class="field">
+      <label>アバター</label>
+      <div class="avatar-grid" id="avatarGrid"></div>
+    </div>
+
+    <p class="err" id="setupErr" hidden></p>
+    <button class="btn btn-primary btn-xl w-full" id="setupGo">きめる</button>
+  </div>
+</main>
+
+<!-- ══════════ ロビー ══════════ -->
+<main class="screen" id="screen-lobby">
+  <div class="pane pane-wide">
+    <div class="code-plate">
+      <span class="code-label">あいことば</span>
+      <strong class="code-value" id="lobbyCode">----</strong>
+      <button class="btn btn-mini" id="copyLink">リンクをコピー</button>
+    </div>
+
+    <h3 class="sec-title">参加者 <span class="cnt" id="lobbyCount">0</span></h3>
+    <div class="lobby-players" id="lobbyPlayers"></div>
+
+    <div id="hostBox">
+      <h3 class="sec-title">設定<span class="host-tag">ホストのみ</span></h3>
+      <div class="opt-block">
+        <span class="opt-label">モード</span>
+        <div class="mode-cards" id="optMode"></div>
+        <p class="opt-desc" id="modeDesc"></p>
+        <p class="mode-fit" id="modeFit"></p>
+      </div>
+      <div class="opt-block">
+        <span class="opt-label">お題のノリ</span>
+        <div class="opt-row" id="optPack">
+          <button class="chip" data-v="all">全年齢</button>
+          <button class="chip" data-v="spicy">ちょい下世話</button>
+          <button class="chip" data-v="mix">ぜんぶ</button>
+        </div>
+      </div>
+      <div class="opt-block" id="optOyaBlock">
+        <span class="opt-label">オヤメガネの答え方</span>
+        <div class="opt-row" id="optOya">
+          <button class="chip" data-v="free">自由に答える（みんなで判定）</button>
+          <button class="chip" data-v="choice">4択</button>
+        </div>
+      </div>
+      <div class="opt-block">
+        <span class="opt-label">ラウンド数</span>
+        <div class="opt-row" id="optRounds">
+          <button class="chip" data-v="4">4</button>
+          <button class="chip" data-v="6">6</button>
+          <button class="chip" data-v="8">8</button>
+          <button class="chip" data-v="12">12</button>
+        </div>
+      </div>
+      <p class="err" id="lobbyErr" hidden></p>
+      <button class="btn btn-primary btn-xl w-full" id="startBtn">ゲーム開始</button>
+    </div>
+    <p class="wait-note" id="guestNote" hidden>ホストが開始するのを待っています…</p>
+    <button class="link-btn" id="leaveBtn">部屋を出る</button>
+  </div>
+</main>
+
+<!-- ══════════ ゲーム ══════════ -->
+<main class="screen screen-game" id="screen-game">
+  <header class="hud-bar">
+    <div class="hud-left">
+      <span class="hud-round" id="hudRound">R1</span>
+      <span class="hud-mode" id="hudMode">—</span>
+    </div>
+    <div class="hud-right">
+      <span class="hud-timer" id="hudTimer" hidden><i></i><b>--</b></span>
+      <!-- スコープは上のバーに置く（以前は右下にあり、右下のカードに重なって押し間違えていた） -->
+      <button class="scope-toggle" id="scopeToggle" type="button" title="スコープ" aria-label="スコープ" hidden><span class="st-ico"></span><span class="st-txt">スコープ</span></button>
+      <button class="btn btn-mini" id="scoreBtn">得点</button>
+    </div>
+  </header>
+
+  <div class="topic-plate" id="topicPlate">
+    <span class="topic-kicker" id="topicKicker">お題</span>
+    <p class="topic-text" id="topicText">—</p>
+  </div>
+
+  <section class="stage" id="stage">
+    <div class="lineup" id="lineup"></div>
+    <div class="stage-floor"></div>
+  </section>
+
+  <section class="panel" id="panel"></section>
+
+  <!-- スコアパネル（オーバーレイ） -->
+  <div class="sheet" id="scoreSheet" hidden>
+    <div class="sheet-inner">
+      <h3>とくてん</h3>
+      <ol class="score-list" id="scoreList"></ol>
+      <button class="btn btn-ghost w-full" id="scoreClose">とじる</button>
+      <button class="link-btn" id="scoreLeave" type="button">この部屋を出る</button>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════ 最終結果 ══════════ -->
+<main class="screen" id="screen-end">
+  <div class="pane pane-wide">
+    <h2 class="pane-title big">スキャン完了</h2>
+    <ol class="podium" id="podium"></ol>
+    <div class="end-actions">
+      <button class="btn btn-primary btn-xl w-full" id="againBtn">もう一回あそぶ</button>
+      <button class="btn btn-ghost w-full" id="shareBtn">結果をシェア</button>
+      <button class="link-btn" id="endLeave" type="button">部屋を出てホームへ</button>
+    </div>
+  </div>
+</main>
+
+<!-- ══════════ 遊び方 ══════════ -->
+<div class="sheet" id="howtoSheet" hidden>
+  <div class="sheet-inner sheet-scroll">
+    <h3>遊び方</h3>
+    <ol class="howto">
+      <li><b>部屋をつくる</b>と4文字の合言葉が出ます。友だちに送って集合。</li>
+      <li>お題が出たら<b>自分の数字をこっそり入力</b>。ウソはナシで。</li>
+      <li><b>スコープをかざす</b>と、参加者の頭の上に数字が浮かびます。</li>
+      <li>モードごとの答えを出して、当たれば得点。</li>
+    </ol>
+    <p class="fineprint">どのモードも <b>3〜12人</b>で遊べます。各モードに書いてある人数は「いちばん面白い」目安です。<br>アバターは早い者勝ちで、かぶった人は空いているものに自動で変わります。</p>
+    <h4>4つのモード</h4>
+    <dl class="howto-modes" id="howtoModes"></dl>
+    <p class="fineprint">※ 個人の数字を扱うゲームです。答えたくないお題は正直に「0」でも構いません。無理のない範囲で遊んでください。</p>
+    <button class="btn btn-ghost w-full" id="howtoClose">とじる</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<!-- 通信が切れている間の帯 -->
+<div class="net-bar" id="netBar" hidden>📡 通信が切れました。つなぎ直し中…</div>
+
+<!-- 別のタブ・端末に席を取られたとき（黙って奪い返すと取り合いになるので手で選んでもらう） -->
+<div class="sheet" id="takeoverSheet" hidden>
+  <div class="sheet-inner">
+    <h3>ほかの画面でプレイ中です</h3>
+    <p class="fineprint">同じ合言葉・同じ名前で、別のタブか端末から入り直したようです。<br>どちらか一方でだけ遊べます。</p>
+    <div class="end-actions">
+      <button class="btn btn-primary btn-xl w-full" id="retakeBtn">この画面で続ける</button>
+      <button class="btn btn-ghost w-full" id="takeoverHomeBtn">ホームにもどる</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ スコープ演出レイヤー ══════════ -->
+<div class="scope" id="scope" hidden aria-hidden="true">
+  <div class="scope-dark"></div>
+  <div class="scope-lens">
+    <div class="scope-tint"></div>
+    <div class="scope-scan"></div>
+    <div class="scope-sweep"></div>
+  </div>
+  <svg class="scope-reticle" id="reticle" viewBox="0 0 200 200" aria-hidden="true">
+    <circle class="r-rim" cx="100" cy="100" r="89" />
+    <circle class="r-ring" cx="100" cy="100" r="89" />
+    <path class="r-glass" d="M38 78a66 66 0 0 1 36-36" />
+    <path class="r-star s1" transform="translate(24 26)" d="M0 -11 L2.9 -2.9 L11 0 L2.9 2.9 L0 11 L-2.9 2.9 L-11 0 L-2.9 -2.9 Z" />
+    <path class="r-star s2" transform="translate(178 62) scale(.8)" d="M0 -11 L2.9 -2.9 L11 0 L2.9 2.9 L0 11 L-2.9 2.9 L-11 0 L-2.9 -2.9 Z" />
+    <path class="r-star s3" transform="translate(152 180) scale(.9)" d="M0 -11 L2.9 -2.9 L11 0 L2.9 2.9 L0 11 L-2.9 2.9 L-11 0 L-2.9 -2.9 Z" />
+  </svg>
+  <div class="scope-hud">
+    <span class="scope-tag" id="scopeTag">SCANNING…</span>
+  </div>
+</div>
+
+<script src="socket.io/socket.io.js?v=86d3864"></script>
+<script type="module" src="js/app.js?v=86d3864"></script>
+</body>
+</html>
